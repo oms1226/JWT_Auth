@@ -70,7 +70,10 @@ app.use((req, res, next)=>{
             else{
               console.log("success");
               req.decoded=decod;
-              next();
+              //next();
+              res.status(200).json({
+                message:"Correct Token"
+              });
             }
           });
         }
