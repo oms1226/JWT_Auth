@@ -5,11 +5,11 @@ var jwt=require('jsonwebtoken');
 
 var users=[
 {
-  name:"xxxx",
+  name:"user00",
   password:"xxxx"
 },
 {
-  name:"yyyy",
+  name:"user01",
   password:"yyyy"
 }
 ]
@@ -25,6 +25,7 @@ app.get('/', (req,res)=>{
 });
 
 app.post('/login',(req,res)=>{
+    console.log("/login");
     var message;
     for(var user of users){
       if(user.name!=req.body.name){
@@ -35,6 +36,7 @@ app.post('/login',(req,res)=>{
               break;
           }
           else{
+              user.exp = Math.floor(Date.now() / 1000) + 30;
               var token=jwt.sign(user,"samplesecret");
               console.log(token);
               message="Login Successful";
@@ -53,6 +55,7 @@ app.post('/login',(req,res)=>{
             message
         });
     }
+    console.log("/login --> " + message);
 });
 
 app.use((req, res, next)=>{
@@ -60,9 +63,10 @@ app.use((req, res, next)=>{
         console.log(req.body);
         var token = req.body.token || req.query.token || req.headers['x-access-token'];
         if(token){
-          console.log("token");
+          console.log("token verify");
           jwt.verify(token,"samplesecret",(err,decod)=>{
             if(err){
+              console.log(err);
               res.status(403).json({
                 message:"Wrong Token"
               });
